@@ -54,6 +54,27 @@ if ($_POST) {
 
         // POR PADRÃO O VALOR VEM NEGATIVO, USANDO *-1 CONVERTEMOS O VALOR PARA POSITIVO
         $valor_transferido = $response->value * -1;
+        
+        /**
+         * RECOMENDAMOS FAZER ALGUMAS VALIDAÇÕES PARA GARANTIR QUE TUDO ESTÁ OK
+         * 
+         * A $conta_destino_do_dinheiro É A CONTA QUE VOCÊ ESPERA QUE SEJA?
+         * O $valor_transferido É IGUAL AO VALOR QUE VOCÊ ESPERA QUE SEJA?
+         * A $conta_origem_do_dinheiro É A MESMA CONTA DO USUÁRIO QUE DISSE QUE ENVIOU O DINHEIRO?
+         * 
+         * 
+         * SE ALGUMA DAS VALIDAÇÕES ACIMA FOR NEGATIVA, RECOMENDAMOS QUE RECUSE O INFORME DE PAGAMENTO PARA 
+         * EVITAR TENTATIVAS DE FRAUDES, INFELIZMENTE HÁ PESSOAS MAL INTENCIONADAS QUE VÃO TENTAR
+         * 
+         * OUTRO PONTO IMPORTANTE É QUE O VALOR VAI VIR DO SERVIDOR EM REAIS COM . (NO PADRÃO AMERICANO) NO TIPO FLOAT
+         * 
+         * EXEMPLOS DE VALORES
+         * 1    = R$  1,00
+         * 1.05 = R$  1,05
+         * 1.5  = R$  1,50
+         * 21   = R$ 21,00
+         * 19.9 = R$ 19,90
+         */
     }
 }
 ?>
