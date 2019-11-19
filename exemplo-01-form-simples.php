@@ -6,10 +6,13 @@
  * SE FOI ENVIADO, TENTA CONSULTAR O HASH NA UNITY BANK
  */
 if ($_POST) {
-    $hash_unity = $_POST['hash_unity'];
+    // DEFINE A VARIAVEL QUE VAI RECEBER A HASH COM BASE NO NAME DO INPUT USADO NO FORM
+    $hash_unity = $_POST['hash_unity'];  
 
+    // INICIA O REQUEST DO CURL
     $curl = curl_init();
-    
+
+    // DAS LINHAS 16 ATÉ 27 SERVER APENAS PARA EFETUAR O REQUEST USANDO CURL
     curl_setopt_array($curl, array(
       CURLOPT_URL => "https://services.maisbank.online/api/publica/consulta/transacao/$hash_unity",
       CURLOPT_RETURNTRANSFER => true,
@@ -23,26 +26,33 @@ if ($_POST) {
       ),
     ));
     
+    // CAPTURA O RESULTADO DO CURL
     $response = curl_exec($curl);
     $err = curl_error($curl);
-    
+
+    // ENCERRA O CURL PARA LIBERAR O SERVIDOR DO REQUEST
     curl_close($curl);
 
+    // CONFIGURA UMA VARIAVEL PARA DEPOIS EXIBIR OU NÃO UMA RESPOSTA NO LAYOUT
     $var_sucesso = false;
     
+    // VERIFICA SE HOUVE UM ERRO OU NÃO NO REQUEST
     if ($err) {
         // SE DER ALGUM ERRO, PODE EXIBIR UMA MENSAGEM OU TRATAR O ERRO AQUI DENTRO
         echo "Deu erro na validação da transação";
     } else {
-        // SE ENCONTROU E OBTEVE UMA RESPOSTA COM SUCESSO, DEFINE AS VARIÁVEIS
+        // SE ENCONTROU E OBTEVE UMA RESPOSTA COM SUCESSO, DEFINE AS VARIÁVEIS PARA USO
         $var_sucesso = true;
 
+        // CONVERTE A RESPOSTA DO SERVIDOR DE JSON PARA ARRAY/OBJETO PHP
         $response = json_decode($response);
 
         // DEFINE AS VARIÁVEIS QUE VAI TER PARA TRABALHAR
-        //O NÚMERO DAS CONTAS NÃO CONTEM O HÍFEN (-) OU SEJA, A CONTA 1234-123 RETORNARÁ DO SERVIDOR COMO 1234123
+        // O NÚMERO DAS CONTAS NÃO CONTEM O HÍFEN (-) OU SEJA, A CONTA 1234-123 RETORNARÁ DO SERVIDOR COMO 1234123
         $conta_origem_do_dinheiro = $response->wallet->user->numero_conta_maisbank;
         $conta_destino_do_dinheiro = $response->counter_part->user->numero_conta_maisbank;
+
+        // POR PADRÃO O VALOR VEM NEGATIVO, USANDO *-1 CONVERTEMOS O VALOR PARA POSITIVO
         $valor_transferido = $response->value * -1;
     }
 }
